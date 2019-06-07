@@ -40,4 +40,37 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    // Connecting to A Register
+    Not(in=instruction[15], out=notA);
+    Mux16(a=outALU, b=instruction, sel=notA, out=inputA);
+    Or(a=notA, b=instruction[5], out=loadA);
+    ARegister(in=inputA, load=loadA, out=outA, out[0..14]=addressM, out=inPC);
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    //Connecting to ALU
+    Mux16(a=outA, b=inM, sel=instruction[12], out=inputALU);
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    DRegister(in=inD, load=loadD, out=outD);
+    ALU(x=outD, y=inputALU, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=inD, out=outALU, out=outM, zr=zr, ng=ng);
+
+    // Jump
+    
+    //Test positive
+    And(a=instruction[15], b=instruction[0], out=testpositive);
+    Not(in=ng, out=notneg);
+    Not(in=zr, out=notzero);
+    And(a=notneg, b=notzero, out=pos);
+    And(a=testpositive, b=pos, out=outpos);
+
+    //Test zero
+    And(a=instruction[15], b=instruction[1], out=testzero);
+    And(a=testzero, b=zr, out=outzero);
+
+    //Test negative
+    And(a=instruction[15], b=instruction[2], out=testng);
+    And(a=testng, b=ng, out=outng);
+
+    Or(a=outzero, b=outng, out=tempload);
+    Or(a=tempload, b=outpos, out=load, out=notload);
+    Not(in=notload, out=inc);
+    PC(in=inPC, load=load, inc=inc, reset=reset, out[0..14]=pc);
 }
