@@ -1,0 +1,10 @@
+
+numbers = [1, 2, 3]
+index = 0
+sets = [[]]
+while index < len(numbers):
+    for s in sets:
+        sets.append(s.append(numbers[0]))
+    index += 1
+
+print(sets)
