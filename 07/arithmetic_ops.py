@@ -17,50 +17,56 @@ get_first_arg = f"    @{SPR}\n" \
     "    M=M-1\n" \
     "    A=M\n"
 
+
 def ADD():
     return pop_second_arg + \
-    get_first_arg + \
-    "    MD=D+M\n" + \
-    advance_spr
+        get_first_arg + \
+        "    M=M+D\n" + \
+        advance_spr
 
 
 def SUB():
     return pop_second_arg + \
-    get_first_arg + \
-    "    MD=M-D\n" + \
-    advance_spr
+        get_first_arg + \
+        "    M=M-D\n" + \
+        advance_spr
+
 
 def NEG():
     return get_first_arg + \
-    "    M=-M\n" + \
-    advance_spr
+        "    M=-M\n" + \
+        advance_spr
+
 
 def AND():
     return pop_second_arg + \
-    get_first_arg + \
-    "    M=D&M\n" + \
-    advance_spr
+        get_first_arg + \
+        "    M=D&M\n" + \
+        advance_spr
+
 
 def OR():
     return pop_second_arg + \
-    get_first_arg + \
-    "    M=D|M\n" + \
-    advance_spr
+        get_first_arg + \
+        "    M=D|M\n" + \
+        advance_spr
+
 
 def NOT():
     return get_first_arg + \
-    "    M=!M\n" + \
-    advance_spr
+        "    M=!M\n" + \
+        advance_spr
+
 
 TRUE = "(TRUE)\n" \
     f"    @{SPR}\n" \
-    "    A=M\n" \
-    "    M=-1\n" \
+       "    A=M\n" \
+       "    M=-1\n" \
     f"    @{SPR}\n" \
     f"    M=M+1\n" \
-    "    @R15\n" \
-    "    A=M\n" \
-    "    0;JMP\n"
+       "    @R15\n" \
+       "    A=M\n" \
+       "    0;JMP\n"
 
 FALSE = "(FALSE)\n" \
     f"    @{SPR}\n" \
@@ -91,11 +97,11 @@ def EQ():
            f"    M=D\n" + \
            pop_second_arg + \
            get_first_arg + \
-            "    D=M-D\n" \
-            "    @TRUE\n" \
-            "    D;JEQ\n" \
-            "    @FALSE\n" \
-            "    0;JMP\n" \
+        "    D=M-D\n" \
+        "    @TRUE\n" \
+        "    D;JEQ\n" \
+        "    @FALSE\n" \
+        "    0;JMP\n" \
            f"(EQ_{n})\n"
 
 

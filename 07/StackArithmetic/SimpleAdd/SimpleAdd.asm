@@ -1,27 +1,48 @@
-@7
-D=A
-@0
-A=M
-M=D
-@0
-M=M+1
-@8
-D=A
-@0
-A=M
-M=D
-@0
-M=M+1
-@0
-M=M-1
-A=M
-D=M
-@0
-M=M-1
-A=M
-MD=D+M
-@0
-M=M+1
+@START
+    0;JMP
+(TRUE)
+    @0
+    A=M
+    M=-1
+    @0
+    M=M+1
+    @R15
+    A=M
+    0;JMP
+(FALSE)
+    @0
+    A=M
+    M=0
+    @0
+    M=M+1
+    @R15
+    A=M
+    0;JMP
+(START)
+    @7
+    D=A
+    @0
+    A=M
+    M=D
+    @0
+    M=M+1
+    @8
+    D=A
+    @0
+    A=M
+    M=D
+    @0
+    M=M+1
+    @0
+    M=M-1
+    A=M
+    D=M
+    @0
+    M=M-1
+    A=M
+    MD=D+M
+    @0
+    M=M+1
 (END)
     @END
     0;JMP

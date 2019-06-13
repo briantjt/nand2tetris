@@ -2,6 +2,7 @@
 import sys, os
 from typing import TextIO
 from arithmetic_ops import ARITHMETIC_OPS, TRUE, FALSE
+from memory import STACK_OPS
 
 SPR  = 0
 LCL  = 1
@@ -10,8 +11,9 @@ THIS = 3
 THAT = 4
 
 filename = sys.argv[1]
-base = filename.split(".")[0]
-output_file = base + ".asm"
+output = filename.split(".")[0]
+output_file = output + ".asm"
+base = output.split("/")[-1]
 
 def manipulate_stack(action: str, mem_segment: str, mem_index: str):
     if action == "push":
@@ -51,9 +53,8 @@ with open(filename) as f:
         o.write(INITIALIZE)
         for line in f:
             commands = parse_line(line)
-            print(commands)
             if len(commands) == 3:
-                o.write(manipulate_stack(*commands))
+                o.write(STACK_OPS[commands[0]](commands[1], commands[2], base))
             elif len(commands) == 1:
                 o.write(ARITHMETIC_OPS[commands[0]]())
             else:
