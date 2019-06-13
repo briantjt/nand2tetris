@@ -15,20 +15,6 @@ output = filename.split(".")[0]
 output_file = output + ".asm"
 base = output.split("/")[-1]
 
-def manipulate_stack(action: str, mem_segment: str, mem_index: str):
-    if action == "push":
-        if mem_segment == "constant":
-            return f"    @{mem_index}\n" \
-                    "    D=A\n" \
-                   f"    @{SPR}\n" \
-                    "    A=M\n" \
-                    "    M=D\n" \
-                   f"    @{SPR}\n" \
-                    "    M=M+1\n"
-    else:
-        pass
-
-
 def parse_line(line):
     commands = []
     command = ""
