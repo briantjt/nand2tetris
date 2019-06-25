@@ -55,28 +55,33 @@ SYMBOLS = {
     '~'
 }
 
-TOKENS = set()
+TOKEN_TAGS = {
+    TokenType.IDENTIFIER: 'identifier',
+    TokenType.INT_CONST: 'integerConstant',
+    TokenType.KEYWORD: 'keyword',
+    TokenType.STRING_CONST: 'stringConstant',
+    TokenType.SYMBOL: 'symbol'
+}
+
 KEYWORDS = set()
-for token in TokenType:
-    TOKENS.add(token.name)
 
 for keyword in KeywordType:
     KEYWORDS.add(keyword.name.lower())
 
 class Token:
-    def __init__(self, token: str):
-        self.token = token
+    def __init__(self, value: str):
+        self.value = value
         self.token_type = self._get_token_type()
 
     def _get_token_type(self):
-        if self.token in SYMBOLS:
+        if self.value in SYMBOLS:
             return TokenType.SYMBOL
-        elif self.token in KEYWORDS:
+        elif self.value in KEYWORDS:
             return TokenType.KEYWORD
-        elif self.token[0].isnumeric():
+        elif self.value[0].isnumeric():
             return TokenType.INT_CONST
-        elif self.token[0] == '"':
-            self.token = self.token[1:-1]
+        elif self.value[0] == '"':
+            self.value = self.value[1:-1]
             return TokenType.STRING_CONST
         else:
             return TokenType.IDENTIFIER

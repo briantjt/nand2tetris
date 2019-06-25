@@ -1,10 +1,10 @@
 from collections import deque
-from enum import Enum
 from .tokens import Token, SYMBOLS
 
 class Tokenizer:
     def __init__(self, filename):
         self.file = open(filename, "r")
+        self.tokens = deque()
         self.end_of_file = False
         self.is_block_comment = False
 
@@ -13,7 +13,7 @@ class Tokenizer:
             return True
         else:
             while not self.end_of_file:
-                while self.is_block_comment:
+                while self.is_block_comment and not self.end_of_file:
                     self._find_comment_end()
                 line = self.file.readline()
                 if not line:
@@ -31,27 +31,42 @@ class Tokenizer:
     def pop_next_token(self):
         return Token(self.tokens.popleft())
 
-    def close(self):
+    def close_file(self):
         self.file.close()
 
     def _parse_line(self, line: str):
         tokens = deque()
         chars = ""
+        potential_comment_start = False
+        potential_comment_end = False
         for char in line:
-            if char in SYMBOLS:
-                # Check for comments and stop parsing current line
-                if char == '*' and chars and chars[-1] == '/':
-                    previous_chars = chars[:-1]
-                    if previous_chars:
-                        tokens.append(previous_chars)
-                    self.is_block_comment = True
-                    break
-                if char == '/' and chars and chars[-1] == '/':
-                    break
-                elif chars:
-                    tokens.append(chars)
+            if self.is_block_comment:
+                if char == "*":
+                    potential_comment_end = True
+                elif char == "/" and potential_comment_end:
+                    self.is_block_comment = False
                     chars = ""
-                chars += char
+                else:
+                    potential_comment_end = False
+
+            elif char in SYMBOLS:
+                # Check for comments and stop parsing current line
+                if char == '*' and potential_comment_start:
+                    tokens.pop()
+                    self.is_block_comment = True
+                elif char == '/' and potential_comment_start:
+                    tokens.pop()
+                    return tokens
+                elif char == '/':
+                    tokens.append(char)
+                    potential_comment_start = True
+                else:
+                    if chars:
+                        tokens.append(chars)
+                        chars = ""
+                    potential_comment_start = False
+                    tokens.append(char)
+                    
             
             # Handle string literals
             elif char == '"':
@@ -59,7 +74,9 @@ class Tokenizer:
                     tokens.append(chars + char)
                     chars = ""
                 else:
-                    chars += char
+                    if chars:
+                        tokens.append(chars)
+                    chars = char
             
             elif char.isspace():
                 if chars and chars[0] == '"':
@@ -67,17 +84,20 @@ class Tokenizer:
                 elif chars:
                     tokens.append(chars)
                     chars = ""
+
             else:
                 chars += char
+        if chars:
+            tokens.append(chars)
         return tokens
 
-        def _find_comment_end(self):
-            while self.is_block_comment:
-                line = self.file.readline()
-                if line == "":
-                    self.end_of_file = True
+    def _find_comment_end(self):
+        while self.is_block_comment:
+            line = self.file.readline()
+            if not line:
+                self.end_of_file = True
+                break
+            for i in range(1, len(line)):
+                if line[i] == "/" and line[i-1] == "*":
+                    self.is_block_comment = False
                     break
-                for i in range(1, len(line)):
-                    if line[i] == "/" and line[i-1] == "*":
-                        self.is_block_comment = False
-                        break
