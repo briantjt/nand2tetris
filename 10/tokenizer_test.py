@@ -13,7 +13,7 @@ else:
     files = [os.path.abspath(arg) + "/" + f for f in os.listdir(arg) if f.endswith('.jack')]
 
 for f in files:
-    output_filename = os.path.abspath(f).split('.')[0] + 'T.xml'
+    output_filename = os.path.abspath(f).split('.')[0] + 'Z.xml'
     output_file = open(output_filename, "w")
     tokenizer = Tokenizer(f)
     output_file.write("<tokens>\n")
