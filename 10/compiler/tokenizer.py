@@ -1,5 +1,6 @@
 from collections import deque
-from .tokens import Token, SYMBOLS
+from compiler.tokens import Token, SYMBOLS
+
 
 class Tokenizer:
     def __init__(self, filename):
@@ -66,8 +67,7 @@ class Tokenizer:
                         chars = ""
                     potential_comment_start = False
                     tokens.append(char)
-                    
-            
+
             # Handle string literals
             elif char == '"':
                 if chars and chars[0] == '"':
@@ -77,7 +77,7 @@ class Tokenizer:
                     if chars:
                         tokens.append(chars)
                     chars = char
-            
+
             elif char.isspace():
                 if chars and chars[0] == '"':
                     chars += char

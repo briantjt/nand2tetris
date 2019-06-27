@@ -68,6 +68,7 @@ KEYWORDS = set()
 for keyword in KeywordType:
     KEYWORDS.add(keyword.name.lower())
 
+
 class Token:
     def __init__(self, value: str):
         self.value = value

@@ -6,13 +6,14 @@ import sys
 import os
 import html
 
-arg = sys.argv[1]
-if os.path.isfile(arg):
-    files = [arg]
+ARG = sys.argv[1]
+if os.path.isfile(ARG):
+    FILES = [ARG]
 else:
-    files = [os.path.abspath(arg) + "/" + f for f in os.listdir(arg) if f.endswith('.jack')]
+    FILES = [os.path.abspath(ARG) + "/" +
+             f for f in os.listdir(ARG) if f.endswith('.jack')]
 
-for f in files:
+for f in FILES:
     output_filename = os.path.abspath(f).split('.')[0] + 'Z.xml'
     output_file = open(output_filename, "w")
     tokenizer = Tokenizer(f)
@@ -22,7 +23,7 @@ for f in files:
         token = tokenizer.pop_next_token()
         tag = TOKEN_TAGS[token.token_type]
         output_file.write(f"<{tag}> {html.escape(token.value)} </{tag}>\n")
-    
+
     output_file.write("</tokens>\n")
     tokenizer.close_file()
     output_file.close()
